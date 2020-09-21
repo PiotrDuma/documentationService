@@ -1,4 +1,5 @@
-package com.github.PiotrDuma.documentationService.security;
+package com.github.PiotrDuma.documentationService.security.OAuth2Config;
+
 
 import java.util.Map;
 
@@ -11,21 +12,20 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
 import com.github.PiotrDuma.documentationService.model.AppUser;
-import com.github.PiotrDuma.documentationService.service.dao.impl.AppUserDaoImpl;
+import com.github.PiotrDuma.documentationService.service.dao.AppUserDao;
 
 @Service
 public class CustomOidcUserService extends OidcUserService{
 
-	private AppUserDaoImpl appUserDao;
+	private final AppUserDao appUserDao;
 	
 	@Autowired
-	public CustomOidcUserService(AppUserDaoImpl appUserDao) {
+	public CustomOidcUserService(AppUserDao appUserDao) {
 		this.appUserDao = appUserDao;
 	}
 
 	@Override
 	public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
-		
 		OidcUser oidcUser = super.loadUser(userRequest);
 
 		try {
@@ -37,12 +37,10 @@ public class CustomOidcUserService extends OidcUserService{
 	}
 
 	private OidcUser storeUser(OidcUser oidcUser) {
-		
 		Map<String, Object> map = oidcUser.getAttributes();
 		String email = (String)map.get("email");
 		
 		if(!appUserDao.isEmailInDatabase(email)){
-	
 			AppUser appUser = new AppUser();
 			appUser.setEmail(email);
 			appUser.setUsername((String)map.get("name"));
@@ -50,5 +48,4 @@ public class CustomOidcUserService extends OidcUserService{
 		}
 		return oidcUser;
 	}
-	
 }

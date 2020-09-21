@@ -1,4 +1,4 @@
-package com.github.PiotrDuma.documentationService.security;
+package com.github.PiotrDuma.documentationService.security.impl;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.PiotrDuma.documentationService.exception.security.AuthenticationException;
 import com.github.PiotrDuma.documentationService.model.AppUser;
+import com.github.PiotrDuma.documentationService.security.UserNavigator;
 import com.github.PiotrDuma.documentationService.service.dao.AppUserDao;
 
 @Service
@@ -23,7 +24,6 @@ public class UserNavigatorImpl implements UserNavigator{
 
 	@Override
 	public String getAppUserEmail(){
-
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			OidcUser oidcUser = (OidcUser)auth.getPrincipal();
@@ -48,6 +48,4 @@ public class UserNavigatorImpl implements UserNavigator{
 	public AppUser getAppUser(){
 		return appUserDao.get(getAppUserEmail()).orElseThrow(AuthenticationException::new);
 	}
-	
-	
 }
