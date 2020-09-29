@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import com.github.PiotrDuma.documentationService.exception.security.AuthenticationException;
 import com.github.PiotrDuma.documentationService.model.AppUser;
+import com.github.PiotrDuma.documentationService.security.impl.UserNavigatorImpl;
 import com.github.PiotrDuma.documentationService.service.dao.AppUserDao;
 
 

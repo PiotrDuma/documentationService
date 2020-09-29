@@ -39,9 +39,7 @@ public class FieldElement extends  VerticalLayout{
     private Button deleteButton = new Button("delete");
     private Button fowardButton = new Button("details ->");
 
-    
-    
-    
+
 	public FieldElement() {
 		init();
 		prepareComponent();
@@ -76,7 +74,7 @@ public class FieldElement extends  VerticalLayout{
 
 		binder.forField(fieldNumber)
 	    .withConverter(
-	        new StringToLongConverter("Enter a number"))
+	        new StringToLongConverter("To nie jest liczba"))
 	    .bind(Field::getFieldNumber, Field::setFieldNumber);
 
 		binder.bindInstanceFields(this);

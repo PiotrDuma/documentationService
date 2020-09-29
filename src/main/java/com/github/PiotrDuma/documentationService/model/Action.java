@@ -34,17 +34,12 @@ public class Action {
 	@CreationTimestamp
 	@Column(name = "created")
 	private LocalDate created;
-	private String note;
-	private long value;
+
 	private String details;
-
-	public String getNote() {
-		return note;
-	}
-
-	public void setNote(String note) {
-		this.note = note;
-	}
+	
+	private double value;
+	private double quantity;
+	private String note;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "field_id", nullable = false)
@@ -53,21 +48,25 @@ public class Action {
 	@Enumerated(EnumType.STRING)
 	private Action.ActionType type;
 
-	public enum ActionType {
-		SEEDING, SPRAYING, TILLAGE, GARTHERING
-	}
-
 	public Action() {
+		this.details = "";
+		this.date = null;
+		this.value = 0;
+		this.quantity = 0;
+		this.field = null;
+		this.type = ActionType.UNKNOWN;
+		this.note = "";
 	}
 
-	public Action(LocalDate date, String note, long value, Field field, ActionType type, String details) {
+	public Action(LocalDate date, String note, double value, double quantity, Field field, ActionType type, String details) {
 		super();
+		this.details = details;
 		this.date = date;
-		this.note = note;
 		this.value = value;
+		this.quantity = quantity;
 		this.field = field;
 		this.type = type;
-		this.details = details;
+		this.note = note;
 	}
 
 	public Long getId() {
@@ -102,11 +101,11 @@ public class Action {
 		this.created = created;
 	}
 
-	public long getValue() {
+	public double getValue() {
 		return value;
 	}
 
-	public void setValue(long value) {
+	public void setValue(double value) {
 		this.value = value;
 	}
 
@@ -125,11 +124,31 @@ public class Action {
 	public void setDetails(String details) {
 		this.details = details;
 	}
+	
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public double getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(double quantity) {
+		this.quantity = quantity;
+	}
 
 	@Override
 	public String toString() {
 		return "Action [id=" + id + ", date=" + date + ", name=" + note + ", field=" + field.getId() + ", type=" + type
 				+ ", details=" + details + "]";
+	}
+	
+	public enum ActionType {
+		SEEDING, SPRAYING, TILLAGE, GATHERING, UNKNOWN
 	}
 
 }
