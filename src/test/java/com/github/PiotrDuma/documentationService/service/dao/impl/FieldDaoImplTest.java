@@ -1,4 +1,4 @@
-package com.github.PiotrDuma.documentationService.dao.impl;
+package com.github.PiotrDuma.documentationService.service.dao.impl;
 
 
 import static org.junit.Assert.assertEquals;
@@ -23,7 +23,6 @@ import com.github.PiotrDuma.documentationService.model.FieldDetails;
 import com.github.PiotrDuma.documentationService.repository.FieldRepo;
 import com.github.PiotrDuma.documentationService.security.UserNavigator;
 import com.github.PiotrDuma.documentationService.service.dao.AppUserDao;
-import com.github.PiotrDuma.documentationService.service.dao.impl.FieldDaoImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class FieldDaoImplTest {

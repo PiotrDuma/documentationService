@@ -1,4 +1,4 @@
-package com.github.PiotrDuma.documentationService.dao.impl;
+package com.github.PiotrDuma.documentationService.service.dao.impl;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.github.PiotrDuma.documentationService.model.AppUser;
 import com.github.PiotrDuma.documentationService.repository.AppUserRepo;
-import com.github.PiotrDuma.documentationService.service.dao.impl.AppUserDaoImpl;
 
 
 @ExtendWith(MockitoExtension.class)
