@@ -45,6 +45,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+
 	</repositories>
 
 	<pluginRepositories>
@@ -200,6 +201,16 @@
 			<artifactId>hamcrest-library</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- VAADIN ADDONS -->
+
+		<!-- https://vaadin.com/directory/component/carousel-3d -->
+		<dependency>
+			<groupId>de.mekaso.vaadin.addons</groupId>
+			<artifactId>carousel</artifactId>
+			<version>0.5.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

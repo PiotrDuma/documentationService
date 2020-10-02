@@ -1,20 +1,32 @@
 package com.github.PiotrDuma.documentationService.frontend;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.github.PiotrDuma.documentationService.frontend.ui.Footer;
+import com.github.PiotrDuma.documentationService.service.mail.MailService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.H5;
+import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import de.mekaso.vaadin.addons.Carousel;
 
 @Route(value = "start")
 @PageTitle("DocService | start")
@@ -24,16 +36,28 @@ public class Start extends VerticalLayout {
 
 	private VerticalLayout layout;
 
-	public Start() {
-		this.layout = new VerticalLayout();
-		final HorizontalLayout header = prepareHeader();
-		final VerticalLayout content = prepareContent();
-		final HorizontalLayout footer = new Footer().getFooter();
+	private final MailService mail;
+	final HorizontalLayout header;
+	final VerticalLayout content;
+	final HorizontalLayout footer;
 
+	@Autowired
+	public Start(@Qualifier("mailSupport") MailService mail) {
+		this.mail = mail;
+		this.layout = new VerticalLayout();
+
+		header = prepareHeader();
+		content = prepareContent();
+		footer = new Footer().getFooter();
+		initView();
+	}
+
+	private void initView() {
 		header.setSizeFull();
 		header.setAlignItems(Alignment.CENTER);
 		header.getStyle().set("padding-bottom", "5px").set("padding-left", "20%").set("padding-right", "20%");
 		header.getStyle().set("position", "sticky").set("top", "0px").set("background-color", "#F8F8F8");
+		header.getStyle().set("z-index", "1000");
 
 		content.setSizeFull();
 		content.getStyle().set("padding-left", "15%").set("padding-right", "15%");
@@ -72,77 +96,136 @@ public class Start extends VerticalLayout {
 	private Tabs prepareMenu() {
 		Tabs tabs = new Tabs();
 
-		List<Button> list = new LinkedList<Button>();
-		
-		list.add(new Button("Start",
-				(e) -> UI.getCurrent().getPage().executeJs("document.getElementById(\"start\").scrollIntoView()")));
-		list.add(new Button("Aplikacja", (e) -> UI.getCurrent().getPage()
-				.executeJs("document.getElementById(\"application\").scrollIntoView()")));
-		list.add(new Button("Funkcje",
-				(e) -> UI.getCurrent().getPage().executeJs("document.getElementById(\"functions\").scrollIntoView()")));
-		list.add(new Button("Kontakt",
-				(e) -> UI.getCurrent().getPage().executeJs("document.getElementById(\"contact\").scrollIntoView()")));
+		Tab start = new Tab("Start");
+		Tab funkcje = new Tab("Funkcje");
+		Tab kontakt = new Tab("Kontakt");
 
-		list.forEach(c -> c.setSizeFull());
-		list.stream().map(c -> {return new Tab(c);}).forEach(c -> tabs.add(c));
+		Map<Tab, String> map = new HashMap<>();
+		map.put(start, "document.getElementById(\"start\").scrollIntoView()");
+		map.put(funkcje, "document.getElementById(\"functions\").scrollIntoView()");
+		map.put(kontakt, "document.getElementById(\"contact\").scrollIntoView()");
+
+		tabs.add(start, funkcje, kontakt);
+		tabs.addSelectedChangeListener(item -> {
+			UI.getCurrent().getPage().executeJs(map.get(item.getSelectedTab()));
+		});
+
 		tabs.setFlexGrowForEnclosedTabs(0);
-		
 		return tabs;
 	}
 
 	private VerticalLayout prepareContent() {
-
 		VerticalLayout content = new VerticalLayout();
 
-		VerticalLayout v1 = new VerticalLayout();
-		v1.setId("start");
-		v1.add(new H3("Lorem Ipsum"));
-		v1.add(new Text("\r\n" + "\r\n"
-				+ "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at euismod est, a elementum ligula. Ut vehicula placerat eros, eu sollicitudin nunc hendrerit non. Vivamus a augue diam. Nam tincidunt, urna ac tempor vulputate, dolor metus lacinia orci, eget suscipit nunc libero sit amet justo. Nunc rutrum imperdiet nisi, in condimentum nunc feugiat ut. Pellentesque commodo erat viverra erat tincidunt, vel pulvinar arcu congue. In congue et tellus at pretium. Ut a laoreet est. Sed sed quam bibendum, fermentum est quis, rutrum mauris.\r\n"
-				+ "\r\n"
-				+ "Sed libero purus, commodo vitae vulputate ut, ultricies et nibh. Cras id lectus id dui tincidunt varius nec eu leo. Nulla bibendum luctus neque, a semper tellus cursus non. Sed lectus eros, tempus id ex quis, fringilla maximus nunc. Cras justo diam, ornare a erat sed, ullamcorper vestibulum libero. Ut ornare vel felis eu eleifend. Etiam eget sem risus. Vivamus elit nisl, luctus in libero a, mattis aliquet ligula. Integer ac tellus pretium massa viverra porta. Mauris vel mattis velit, sed maximus eros. Fusce sodales elementum mollis. Nam id lectus bibendum, laoreet magna eget, ultricies urna. Sed pellentesque sit amet massa vel ullamcorper.\r\n"
-				+ "\r\n"
-				+ "Cras hendrerit, ipsum eget hendrerit eleifend, lacus felis porta sapien, vitae pulvinar ante diam in magna. Aliquam ac eleifend est. Vestibulum fermentum, libero vitae condimentum porta, ex massa mattis erat, sit amet laoreet lorem nisl in purus. Integer pulvinar libero est, vitae laoreet eros cursus at. Integer mollis in tellus nec aliquet. Sed id libero accumsan, pretium tortor quis, condimentum nulla. Aliquam vel viverra velit, eu vulputate purus. Proin mattis mollis mattis.\r\n"
-				+ "\r\n"
-				+ "Sed pulvinar ex metus, quis tempus dolor sollicitudin ac. Donec venenatis mattis massa sit amet ornare. Sed sollicitudin diam enim, quis faucibus justo mattis suscipit. Sed diam elit, cursus eu rutrum vitae, semper non sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Etiam sollicitudin erat non tempus molestie. Nunc ornare sed nisi viverra finibus. Fusce sollicitudin viverra arcu, eget vehicula ipsum ultricies vel. Nulla posuere elit odio, non porttitor nulla vehicula sit amet. Nullam leo diam, pellentesque sed erat sit amet, pharetra ultrices purus.\r\n"
-				+ "\r\n"
-				+ "Pellentesque eget euismod urna. Aliquam condimentum arcu sit amet est bibendum, non congue lacus tincidunt. Mauris lacinia ultricies lacus ut eleifend. Duis eget vestibulum orci. Integer interdum justo sed scelerisque imperdiet. Phasellus vel lacus ut orci pharetra rutrum et nec ante. Nam eleifend purus et tempor porttitor. "));
+		VerticalLayout section1 = startContent();
+		section1.setId("start");
 
-		VerticalLayout v2 = new VerticalLayout();
-		v2.setId("application");
-		v2.add(new H3("Integer vitae turpis at erat luctus maximus ac imperdiet mauris."
-				+ " Donec fringilla eleifend tellus vel luctus. Sed malesuada risus vitae"
-				+ " consectetur feugiat. Pellentesque leo eros, luctus sit amet consequat"
-				+ " ut, convallis sed lacus. Phasellus pellentesque fermentum justo, lacinia "
-				+ "tempus nibh dictum ac. Aliquam ultricies nunc at est dignissim tristique. "
-				+ "Sed sit amet venenatis purus. "));
+		VerticalLayout section2 = new VerticalLayout();
+		section2.setId("functions");
+		section2.add(section2Text());
+		section2.add(applicationContentExpose());
 
-		VerticalLayout v3 = new VerticalLayout();
-		v3.setId("functions");
-		v3.add(new H3("Chapter3"));
-		v3.add(new Text("Etiam at dolor dui. Ut fermentum nulla sed sapien sollicitudin "
-				+ "pharetra. Aliquam lectus odio, fermentum sit amet pretium et, efficitur "
-				+ "at nunc. Vivamus ut rhoncus leo, nec tincidunt massa. Suspendisse ac nisi "
-				+ "quis velit tempus vulputate eu et lectus. Integer semper magna tempus justo "
-				+ "cursus tristique. Donec suscipit mi enim. Vestibulum velit turpis, euismod sit "
-				+ "amet odio sit amet, commodo auctor turpis. Fusce vel dapibus lectus. Proin nisi "
-				+ "lorem, euismod sit amet iaculis ac, consectetur sed tortor. "));
+		VerticalLayout section3 = new VerticalLayout();
+		section3.getStyle().set("margin-top", "50px");
+		section3.setId("contact");
+		section3.add(contactSection());
 
-		VerticalLayout v4 = new VerticalLayout();
-		v4.setId("contact");
-		v4.add(new Text("Etiam at dolor dui. Ut fermentum nulla sed sapien sollicitudin "
-				+ "pharetra. Aliquam lectus odio, fermentum sit amet pretium et, efficitur "
-				+ "at nunc. Vivamus ut rhoncus leo, nec tincidunt massa. Suspendisse ac nisi "
-				+ "quis velit tempus vulputate eu et lectus. Integer semper magna tempus justo "
-				+ "cursus tristique. Donec suscipit mi enim. Vestibulum velit turpis, euismod sit "
-				+ "pharetra. Aliquam lectus odio, fermentum sit amet pretium et, efficitur "
-				+ "at nunc. Vivamus ut rhoncus leo, nec tincidunt massa. Suspendisse ac nisi "
-				+ "quis velit tempus vulputate eu et lectus. Integer semper magna tempus justo "
-				+ "amet odio sit amet, commodo auctor turpis. Fusce vel dapibus lectus. Proin nisi "
-				+ "lorem, euismod sit amet iaculis ac, consectetur sed tortor. "));
-
-		content.add(v1, v2, v3, v4);
+		content.add(section1, section2, section3);
 		return content;
 	}
 
+	private VerticalLayout startContent() {
+		HorizontalLayout body = new HorizontalLayout();
+		Button showMore = new Button("Czytaj więcej",
+				e -> UI.getCurrent().getPage().executeJs("document.getElementById(\"application\").scrollIntoView()"));
+		showMore.getStyle().set("border-radius", "12px").set("background-color", "#4CAF50").set("color", "white");
+
+		VerticalLayout description = new VerticalLayout();
+		description.setWidth("250px");
+		description.add(new H4("Wypróbuj aplikację do tworzenia dokumentacji rolicznej ZA DARMO."));
+		description.add(showMore);
+		description.setHeightFull();
+
+		Image image = new Image("images/start/image.jpg", "presenter image");
+		image.setWidth("250px");
+		image.setHeight("250px");
+		body.add(description, image);
+
+		VerticalLayout out = new VerticalLayout(body);
+		out.setSizeFull();
+		out.setAlignItems(Alignment.CENTER);
+		return out;
+	}
+
+	private VerticalLayout section2Text() {
+		H3 header = new H3("Dostępne funkcje aplikacji");
+		Text text = new Text("Aplikacja umożliwa tworzenie dokumentacji rolniczej w oparciu"
+				+ "o nowoczense systemy informatyczne. Korzystając z niej będziesz miał możliwość"
+				+ "dodawania i monitorowania swoich pól w zależności od szacowanego bilansu funansowego, "
+				+ "a także wykonanych na nich akcji, co ułatwi przyszłe planowanie działań oraz wypełnianie"
+				+ "wniosków i dokumentów.");
+
+		return new VerticalLayout(header, text);
+	}
+
+	private Carousel applicationContentExpose() {
+		Carousel carousel = Carousel.create();
+		carousel.setWidthFull();
+		carousel.add(new Image("images/start/screen3.png", "screen1"));
+		carousel.add(new Image("images/start/screen3.png", "screen2"));
+		carousel.add(new Image("images/start/screen3.png", "screen3"));
+		return carousel;
+	}
+
+	private VerticalLayout contactSection() {
+		HorizontalLayout body = new HorizontalLayout();
+		body.setWidthFull();
+
+		VerticalLayout section = new VerticalLayout();
+		section.add(new H3("Kontakt"));
+		section.add(new Text("Masz problem lub wątpliwości? A może masz pomysl jak "
+				+ "usprawnić działanie aplikacji, bądz sposób na nowe funkcjonalności."
+				+ "Nie wahaj się! Skontaktuj się z nami!!"));
+		section.add(body);
+
+		TextArea textBox = new TextArea();
+		textBox.setWidthFull();
+		textBox.setHeight("200px");
+		textBox.setMaxLength(1000);
+
+		EmailField emailField = new EmailField();
+		emailField.setErrorMessage("Niepoprawny format email");
+		System.out.println(emailField.getValue());
+		Button send = new Button("Send", e -> {
+				if(!emailField.isInvalid()) {
+					mailSupport("Message from: " + emailField.getValue(),textBox.getValue());
+				}								
+			});		
+
+		VerticalLayout sidePanel = new VerticalLayout(new H5("Wyślij nam maila."));
+		sidePanel.add(emailField, send);
+		sidePanel.setWidth("30%");
+		
+		body.add(sidePanel);
+		body.add(new VerticalLayout(new H6("Treść maila"), textBox));
+		return section;
+	}
+
+	private void mailSupport(String subject, String txt) {
+		Dialog dialog = new Dialog();
+		dialog.open();
+		Text dialogTxt = new Text("");
+		Button dialogButton = new Button("Ok", e -> dialog.close());
+
+		dialog.add(new VerticalLayout(dialogTxt, dialogButton));
+		if (subject.isEmpty() || txt.isEmpty()) {
+			dialogTxt.setText("Email lub treść nie może być pusta.");
+		} else {
+			if (mail.sendMail(subject, txt)) {
+				dialogTxt.setText("Wiadomość została wysłana.");
+			} else {
+				dialogTxt.setText("Coś poszło nie tak. Spróbuj ponownie.");
+			}
+		}
+	}
 }

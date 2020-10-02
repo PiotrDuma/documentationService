@@ -22,7 +22,7 @@ import com.github.PiotrDuma.documentationService.security.AuthTokens;
  * source:
  * https://kgiann78.github.io/java/gmail/2017/03/16/JavaMail-send-mail-at-Google-with-XOAUTH2.html
  */
-@Service
+@Service(value = "mailServiceImpl")
 public class MailServiceImpl implements MailService {
 	private final AuthTokens userTokens;
 

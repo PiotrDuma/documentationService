@@ -1,10 +1,6 @@
 package com.github.PiotrDuma.documentationService.security;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				            new CustomAuthorizationRequestResolver(clientRegistrationRepository))
 			    .and()
 				.loginPage(LOGIN_URL)
-//				.defaultSuccessUrl("/", true)
+				.defaultSuccessUrl("/", true)
 				.permitAll()
 				.and()
 			.logout()
@@ -53,15 +49,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.logoutSuccessUrl(START_PAGE)
 				.deleteCookies("JSESSIONID", "JWT").invalidateHttpSession(true)
 				.permitAll()
-//			.and().exceptionHandling().authenticationEntryPoint(new AuthEntryPoint())
+			.and().exceptionHandling().authenticationEntryPoint(new AuthEntryPoint())
     		.and().csrf().disable();
 	}
 
 	@Override
 	public void configure(WebSecurity web) {
 		web.ignoring().antMatchers("/start", // home page auth request unnecessary
-
-				"/VAADIN/**", "/favicon.ico", "/icons/**", "/images/**", "/styles/**", "/frontend/**", "/webjars/**",
+				"/VAADIN/**", 
+				"/favicon.ico", 
+				"/icons/**", 
+				"/images/**", 
+				"/styles/**", 
+				"/frontend/**", 
+				"/webjars/**",
 				"/sw.js");
 	}
 

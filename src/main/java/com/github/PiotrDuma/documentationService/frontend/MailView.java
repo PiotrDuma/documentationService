@@ -1,6 +1,7 @@
 package com.github.PiotrDuma.documentationService.frontend;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.github.PiotrDuma.documentationService.frontend.ui.MainLayout;
 import com.github.PiotrDuma.documentationService.service.mail.MailService;
@@ -20,8 +21,8 @@ import com.vaadin.flow.router.Route;
 @Route(value = "mail", layout = MainLayout.class)
 public class MailView extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
-
-	private final MailService mail;
+	private final MailService mailServiceImpl;
+	
 	private TextField subject;
 	private TextArea message;
 	private Dialog dialog;
@@ -29,8 +30,8 @@ public class MailView extends VerticalLayout {
 	public String sub;
 
 	@Autowired
-	public MailView(MailService mail) {
-		this.mail = mail;
+	public MailView(@Qualifier("mailServiceImpl")MailService mail) {
+		this.mailServiceImpl = mail;
 		createDialog();
 		
 		VerticalLayout body = prepareBody();
@@ -75,7 +76,7 @@ public class MailView extends VerticalLayout {
 	}
 
 	private void sendMail() {
-		if(mail.sendMail(subject.getValue(), message.getValue())) {
+		if(mailServiceImpl.sendMail(subject.getValue(), message.getValue())) {
 			subject.clear();
 			message.clear();
 			dialog.close();
