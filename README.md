@@ -3,7 +3,7 @@
 Web application MVP(model-view-presenter) with Vaadin14 and SpringBoot2. 
 
 Custom web application for planning and storing documentation in farm buisness. 
-Project was created to learn web application structure based on Spring5. There were used many different layers to exchange data, until entity/model class, through dao and service to controller/presenter later. 
+Project was created to learn web application structure based on Spring5. There were used many different layers to exchange data, until entity/model class, through dao and service to controller/presenter layer. 
 
 
 Used technologies:
